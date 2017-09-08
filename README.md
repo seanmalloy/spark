@@ -13,5 +13,5 @@ $ spark message -f <filename> -s <person> # send file attachment to specific per
 
 ## How To Build
 ```
-$ go build -o spark
+$ go build
 ```
