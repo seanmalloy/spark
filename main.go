@@ -22,6 +22,10 @@ func main() {
 	//		os.Exit(0)
 	//}
 
+	//
+	// https://blog.komand.com/build-a-simple-cli-tool-with-golang
+	//
+
 	msgCommand := flag.NewFlagSet("msg", flag.ExitOnError)
 
 	msgPersonOpt := msgCommand.String("p", "", "send message to a person")
