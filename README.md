@@ -3,12 +3,10 @@
 ## How To Use
 ### Messages
 ```
-$ spark message "hello world"             # send message to default space
-$ spark message -s <space> "hello world"  # send message to specific space
-$ spark message -p <person> "hello world" # send message to specific person
-$ spark message -f <filename>             # send file attachment to default space
-$ spark message -f <filename> -s <space>  # send file attachment to specific space
-$ spark message -f <filename> -s <person> # send file attachment to specific person
+$ spark msg -p <person> "hello world" # send message to specific person
+$ spark msg -s <space> "hello world"  # send message to specific space
+$ spark msg -f <filename> -p <person> # send file attachment to specific person
+$ spark msg -f <filename> -s <space>  # send file attachment to specific space
 ```
 
 ## How To Build
