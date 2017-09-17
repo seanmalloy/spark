@@ -46,9 +46,9 @@ func main() {
 	helpCommand := flag.NewFlagSet("help", flag.ExitOnError)
 
 	msgCommand := flag.NewFlagSet("msg", flag.ExitOnError)
-	msgPersonOpt := msgCommand.String("p", "", "send message to a person")
-	msgSpaceOpt := msgCommand.String("s", "", "send message to a space")
-	msgFileOpt := msgCommand.String("f", "", "send a file attachment")
+	msgPersonOpt := msgCommand.String("p", "", "send message to a `person`")
+	msgSpaceOpt := msgCommand.String("s", "", "send message to a `space`")
+	msgFileOpt := msgCommand.String("f", "", "send a `file` attachment")
 
 	// verify that a sub command has been provided
 	if len(os.Args) < 2 {
