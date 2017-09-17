@@ -13,22 +13,16 @@ import (
 )
 
 func main() {
-	// START: figure out flag sets
-	// helpOpt := flag.Bool("h", false, "print help message and exit")
-	// flag.Parse()
-
-	// if *helpOpt {
-	//		flag.PrintDefaults()
-	//		os.Exit(0)
-	//}
-
 	//
 	// https://blog.komand.com/build-a-simple-cli-tool-with-golang
 	//
 
-	msgCommand := flag.NewFlagSet("msg", flag.ExitOnError)
+	helpCommand := flag.NewFlagSet("help", flag.ExitOnError)
 
+	msgCommand := flag.NewFlagSet("msg", flag.ExitOnError)
 	msgPersonOpt := msgCommand.String("p", "", "send message to a person")
+	msgSpaceOpt := msgCommand.String("s", "", "send message to a space")
+	msgFileOpt := msgCommand.String("f", "", "send a file attachment")
 
 	// verify that a sub command has been provided
 	if len(os.Args) < 2 {
@@ -38,6 +32,8 @@ func main() {
 
 	// parse CLI options for each subcommand
 	switch os.Args[1] {
+	case "help":
+		helpCommand.Parse(os.Args[2:])
 	case "msg":
 		msgCommand.Parse(os.Args[2:])
 	default:
@@ -45,9 +41,53 @@ func main() {
 		os.Exit(1)
 	}
 
+	if helpCommand.Parsed() {
+
+		if os.Args[2] == "msg" {
+			msgCommand.PrintDefaults()
+		}
+	}
+
 	if msgCommand.Parsed() {
-		// TODO: sort out required and optional options
-		fmt.Printf("msgPersonOpt: %s\n", *msgPersonOpt)
+		//
+		// msgPersonOpt
+		// msgSpaceOpt
+		if *msgPersonOpt == "" && *msgSpaceOpt == "" {
+			// neither -p or -s were given
+			msgCommand.PrintDefaults()
+			os.Exit(1)
+		}
+		if *msgPersonOpt != "" && *msgSpaceOpt != "" {
+			// -p and -s were both given
+			msgCommand.PrintDefaults()
+			os.Exit(1)
+		}
+
+		// -f is optional
+		//
+		// msgFileOpt
+		if *msgFileOpt == "" {
+			if *msgPersonOpt != "" {
+				// send message to a person
+				fmt.Println("send message to a person")
+			}
+
+			if *msgSpaceOpt != "" {
+				// send message to a space
+				fmt.Println("send message to a space")
+			}
+		} else {
+			if *msgPersonOpt != "" {
+				// send file to a person
+				fmt.Println("send file to a person")
+			}
+
+			if *msgSpaceOpt != "" {
+				// send file to a space
+				fmt.Println("send file to a space")
+			}
+		}
+
 	}
 
 	os.Exit(0)

@@ -9,6 +9,11 @@ $ spark msg -f <filename> -p <person> # send file attachment to specific person
 $ spark msg -f <filename> -s <space>  # send file attachment to specific space
 ```
 
+### Help
+```
+$ spark help msg
+```
+
 ## How To Build
 ```
 $ go build
