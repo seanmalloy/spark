@@ -53,14 +53,38 @@ func main() {
 
 	helpCommand := flag.NewFlagSet("help", flag.ExitOnError)
 
+	helpCommand.Usage = func() {
+		os.Stderr.WriteString("Print help messages\n")
+		os.Stderr.WriteString("\n")
+		os.Stderr.WriteString("SYNOPSIS\n")
+		os.Stderr.WriteString("  spark help COMMAND\n")
+		os.Stderr.WriteString("\n")
+		os.Stderr.WriteString("EXAMPLES\n")
+		os.Stderr.WriteString("  $ spark help msg\n")
+	}
+
 	msgCommand := flag.NewFlagSet("msg", flag.ExitOnError)
-	msgPersonOpt := msgCommand.String("p", "", "send message to a `person`")
-	msgSpaceOpt := msgCommand.String("s", "", "send message to a `space`")
-	msgFileOpt := msgCommand.String("f", "", "send a `file` attachment")
+	msgPersonOpt := msgCommand.String("p", "", "send message to `PERSON`")
+	msgSpaceOpt := msgCommand.String("s", "", "send message to `SPACE`")
+	msgFileOpt := msgCommand.String("f", "", "send `FILE` as an attachment")
+
+	msgCommand.Usage = func() {
+		os.Stderr.WriteString("Send message to a person or a space\n")
+		os.Stderr.WriteString("\n")
+		os.Stderr.WriteString("SYNOPSIS\n")
+		os.Stderr.WriteString("  spark msg -p PERSON [-f FILE] MESSAGE\n")
+		os.Stderr.WriteString("  spark msg -s SPACE [-f FILE] MESSAGE\n")
+		os.Stderr.WriteString("\n")
+		os.Stderr.WriteString("OPTIONS\n")
+		msgCommand.PrintDefaults()
+		os.Stderr.WriteString("\n")
+		os.Stderr.WriteString("EXAMPLES\n")
+		os.Stderr.WriteString("  $ spark msg -p joe.smith@example.com 'hello world'\n")
+	}
 
 	// verify that a sub command has been provided
 	if len(os.Args) < 2 {
-		fmt.Println("msg command is required")
+		flag.Usage()
 		os.Exit(1)
 	}
 
@@ -75,35 +99,35 @@ func main() {
 	case "msg":
 		msgCommand.Parse(os.Args[2:])
 	default:
-		flag.PrintDefaults()
+		flag.Usage()
 		os.Exit(1)
 	}
 
 	if helpCommand.Parsed() {
-
 		if os.Args[2] == "msg" {
-			msgCommand.PrintDefaults()
+			msgCommand.Usage()
+		} else {
+			flag.Usage()
+			os.Exit(1)
 		}
 	}
 
 	if msgCommand.Parsed() {
 		//
-		// msgPersonOpt
-		// msgSpaceOpt
+		// START: need to make sure that a message is always specified
+		//
 		if *msgPersonOpt == "" && *msgSpaceOpt == "" {
 			// neither -p or -s were given
-			msgCommand.PrintDefaults()
+			msgCommand.Usage()
 			os.Exit(1)
 		}
 		if *msgPersonOpt != "" && *msgSpaceOpt != "" {
 			// -p and -s were both given
-			msgCommand.PrintDefaults()
+			msgCommand.Usage()
 			os.Exit(1)
 		}
 
 		// -f is optional
-		//
-		// msgFileOpt
 		if *msgFileOpt == "" {
 			if *msgPersonOpt != "" {
 				// send message to a person
