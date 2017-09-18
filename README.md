@@ -11,6 +11,7 @@ $ spark msg -f <filename> -s <space>  # send file attachment to specific space
 
 ### Help
 ```
+$ spark help
 $ spark help msg
 ```
 

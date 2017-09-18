@@ -43,6 +43,14 @@ func main() {
 	// https://blog.komand.com/build-a-simple-cli-tool-with-golang
 	//
 
+	flag.Usage = func() {
+		os.Stderr.WriteString("Commands:\n")
+		os.Stderr.WriteString("  spark help [COMMAND]\n")
+		os.Stderr.WriteString("  spark msg [OPTION...] MESSAGE\n")
+	}
+
+	flag.Parse()
+
 	helpCommand := flag.NewFlagSet("help", flag.ExitOnError)
 
 	msgCommand := flag.NewFlagSet("msg", flag.ExitOnError)
@@ -59,6 +67,10 @@ func main() {
 	// parse CLI options for each subcommand
 	switch os.Args[1] {
 	case "help":
+		if len(os.Args) <= 2 {
+			flag.Usage()
+			os.Exit(0)
+		}
 		helpCommand.Parse(os.Args[2:])
 	case "msg":
 		msgCommand.Parse(os.Args[2:])
