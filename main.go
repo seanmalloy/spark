@@ -159,6 +159,10 @@ func main() {
 
 	os.Exit(0)
 
+	//
+	// START: create functions to send messages to people and spaces
+	//
+
 	tr := &http.Transport{
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 	}
