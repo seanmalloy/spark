@@ -113,9 +113,14 @@ func main() {
 	}
 
 	if msgCommand.Parsed() {
-		//
-		// START: need to make sure that a message is always specified
-		//
+		if msgCommand.Arg(0) == "" {
+			// missing message
+			os.Stderr.WriteString("Error: missing MESSAGE\n")
+			os.Stderr.WriteString("\n")
+			msgCommand.Usage()
+			os.Exit(1)
+		}
+
 		if *msgPersonOpt == "" && *msgSpaceOpt == "" {
 			// neither -p or -s were given
 			msgCommand.Usage()
