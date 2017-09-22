@@ -38,6 +38,26 @@ import (
 	"strings"
 )
 
+func send(personId string, authToken string, message string) {
+	tr := &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+	}
+	client := &http.Client{Transport: tr}
+	sparkClient := ciscospark.NewClient(client)
+	sparkClient.Authorization = "Bearer " + authToken
+
+	// POST messages - Text Message
+	request := &ciscospark.MessageRequest{
+		Text:       message,
+		ToPersonID: personId,
+	}
+	newTextMessage, _, err := sparkClient.Messages.Post(request)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("POST:", newTextMessage.ID, newTextMessage.Text, newTextMessage.Created)
+}
+
 func main() {
 	//
 	// https://blog.komand.com/build-a-simple-cli-tool-with-golang
@@ -136,7 +156,15 @@ func main() {
 		if *msgFileOpt == "" {
 			if *msgPersonOpt != "" {
 				// send message to a person
-				fmt.Println("send message to a person")
+
+				//
+				// START: remove hard coded person id
+				//
+				reader := bufio.NewReader(os.Stdin)
+				fmt.Print("Enter Auth Token: ")
+				token, _ := reader.ReadString('\n')
+				token = strings.TrimSuffix(token, "\n")
+				send("722bb271-d7ca-4bce-a9e3-471e4412fa77", token, msgCommand.Arg(0))
 			}
 
 			if *msgSpaceOpt != "" {
@@ -156,35 +184,4 @@ func main() {
 		}
 
 	}
-
-	os.Exit(0)
-
-	//
-	// START: create functions to send messages to people and spaces
-	//
-
-	tr := &http.Transport{
-		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
-	}
-	client := &http.Client{Transport: tr}
-	sparkClient := ciscospark.NewClient(client)
-
-	reader := bufio.NewReader(os.Stdin)
-	fmt.Print("Enter Auth Token: ")
-	token, _ := reader.ReadString('\n')
-	token = strings.TrimSuffix(token, "\n")
-	sparkClient.Authorization = "Bearer " + token
-
-	myPersonID := "722bb271-d7ca-4bce-a9e3-471e4412fa77"
-
-	// POST messages - Text Message
-	message := &ciscospark.MessageRequest{
-		Text:       "This is a text message",
-		ToPersonID: myPersonID,
-	}
-	newTextMessage, _, err := sparkClient.Messages.Post(message)
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println("POST:", newTextMessage.ID, newTextMessage.Text, newTextMessage.Created)
 }
