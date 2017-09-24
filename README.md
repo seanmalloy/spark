@@ -14,6 +14,11 @@ $ spark msg -f <filename> -s <space>  # send file attachment to specific space
 $ spark help
 $ spark help msg
 ```
+### Examples
+```
+# send a message to sparky
+$ spark msg -p 722bb271-d7ca-4bce-a9e3-471e4412fa77 "hello world"
+```
 
 ## How To Build
 ```

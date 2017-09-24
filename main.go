@@ -58,6 +58,10 @@ func send(personId string, authToken string, message string) {
 	fmt.Println("POST:", newTextMessage.ID, newTextMessage.Text, newTextMessage.Created)
 }
 
+//
+// START: create JSON config file for storing credentials
+//
+
 func main() {
 	//
 	// https://blog.komand.com/build-a-simple-cli-tool-with-golang
@@ -157,14 +161,11 @@ func main() {
 			if *msgPersonOpt != "" {
 				// send message to a person
 
-				//
-				// START: remove hard coded person id
-				//
 				reader := bufio.NewReader(os.Stdin)
 				fmt.Print("Enter Auth Token: ")
 				token, _ := reader.ReadString('\n')
 				token = strings.TrimSuffix(token, "\n")
-				send("722bb271-d7ca-4bce-a9e3-471e4412fa77", token, msgCommand.Arg(0))
+				send(*msgPersonOpt, token, msgCommand.Arg(0))
 			}
 
 			if *msgSpaceOpt != "" {
