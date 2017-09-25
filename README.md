@@ -13,7 +13,16 @@ $ spark msg -f <filename> -s <space>  # send file attachment to specific space
 ```
 $ spark help
 $ spark help msg
+
 ```
+### Config File
+The config file is ~/.spark/config.json. It only supports specifying the auth token.
+```
+{
+  "auth": "thisisyourauthtokenforciscospark"
+}
+```
+
 ### Examples
 ```
 # send a message to sparky

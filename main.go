@@ -27,15 +27,15 @@
 package main
 
 import (
-	"bufio"
 	"crypto/tls"
+	"encoding/json"
 	"flag"
 	"fmt"
 	"github.com/jbogarin/go-cisco-spark/ciscospark"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
-	"strings"
 )
 
 func send(personId string, authToken string, message string) {
@@ -58,14 +58,27 @@ func send(personId string, authToken string, message string) {
 	fmt.Println("POST:", newTextMessage.ID, newTextMessage.Text, newTextMessage.Created)
 }
 
-//
-// START: create JSON config file for storing credentials
-//
+type Config struct {
+	Auth string
+}
 
 func main() {
-	//
-	// https://blog.komand.com/build-a-simple-cli-tool-with-golang
-	//
+	// Read config file
+	file, read_err := ioutil.ReadFile(os.Getenv("HOME") + "/.spark/config.json")
+	if read_err != nil {
+		fmt.Printf("Error readng config file: %v\n", read_err)
+		os.Exit(1)
+	}
+	// START: close file
+	// START: make sure ~/.spark/ is 700
+	// START: make sure ~/.spark/config.json is 600
+
+	// Parse config file
+	var config Config
+	parse_error := json.Unmarshal(file, &config)
+	if parse_error != nil {
+		fmt.Println("Error reading config file:", parse_error)
+	}
 
 	flag.Usage = func() {
 		os.Stderr.WriteString("Commands:\n")
@@ -161,11 +174,7 @@ func main() {
 			if *msgPersonOpt != "" {
 				// send message to a person
 
-				reader := bufio.NewReader(os.Stdin)
-				fmt.Print("Enter Auth Token: ")
-				token, _ := reader.ReadString('\n')
-				token = strings.TrimSuffix(token, "\n")
-				send(*msgPersonOpt, token, msgCommand.Arg(0))
+				send(*msgPersonOpt, config.Auth, msgCommand.Arg(0))
 			}
 
 			if *msgSpaceOpt != "" {
