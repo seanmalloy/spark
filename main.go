@@ -69,9 +69,6 @@ func main() {
 		fmt.Printf("Error readng config file: %v\n", read_err)
 		os.Exit(1)
 	}
-	// START: close file
-	// START: make sure ~/.spark/ is 700
-	// START: make sure ~/.spark/config.json is 600
 
 	// Parse config file
 	var config Config
