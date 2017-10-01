@@ -58,6 +58,26 @@ func send(personId string, authToken string, message string) {
 	fmt.Println("POST:", newTextMessage.ID, newTextMessage.Text, newTextMessage.Created)
 }
 
+func sendToRoom(roomId string, authToken string, message string) {
+	tr := &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+	}
+	client := &http.Client{Transport: tr}
+	sparkClient := ciscospark.NewClient(client)
+	sparkClient.Authorization = "Bearer " + authToken
+
+	// POST messages - Text Message
+	request := &ciscospark.MessageRequest{
+		Text:   message,
+		RoomID: roomId,
+	}
+	newTextMessage, _, err := sparkClient.Messages.Post(request)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("POST:", newTextMessage.ID, newTextMessage.Text, newTextMessage.Created)
+}
+
 type Config struct {
 	Auth string
 }
@@ -170,13 +190,12 @@ func main() {
 		if *msgFileOpt == "" {
 			if *msgPersonOpt != "" {
 				// send message to a person
-
 				send(*msgPersonOpt, config.Auth, msgCommand.Arg(0))
 			}
 
 			if *msgSpaceOpt != "" {
 				// send message to a space
-				fmt.Println("send message to a space")
+				sendToRoom(*msgSpaceOpt, config.Auth, msgCommand.Arg(0))
 			}
 		} else {
 			if *msgPersonOpt != "" {
